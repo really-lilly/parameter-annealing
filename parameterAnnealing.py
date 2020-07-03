@@ -1,44 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jul  1 16:07:17 2020
 
-@author: user
-"""
-
-SIGNED IN AS
-Lilly
-ACCOUNT
-Back to Slack
-Home
-Account & profile
-Configure apps
-Analytics
-Customize
-About this workspace
-OTHER
-Tour
-Download apps
-Brand guidelines
-Help
-API
-Pricing
-Contact
-Policies
-Our blog
-Sign out
-Made with  by Slack
-
-MenuSauro Lab
-Plans
-Workspaces
-Help
-Launch Slack
-Launch
-Herbert Sauro
-changeKineticlaw.py  
-19KB Python snippet created on July 1, 2020. This file is private.
-
-ACTIONS
 import tellurium as te
 import roadrunner
 import time
@@ -632,5 +592,5 @@ for trials in range (numberOfTrials):
     derivedModels.append (regulatedSteps)
     print ('Time taken = ', time.time() - timeStart)
     print (derivedModels)
-        
-wrap long lines
+
+  Testing git
