@@ -1,57 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jul  1 16:07:17 2020
-
-@author: user
-"""
-
-SIGNED IN AS
-Lilly
-ACCOUNT
-Back to Slack
-Home
-Account & profile
-Configure apps
-Analytics
-Customize
-About this workspace
-OTHER
-Tour
-Download apps
-Brand guidelines
-Help
-API
-Pricing
-Contact
-Policies
-Our blog
-Sign out
-Made with  by Slack
-
-MenuSauro Lab
-Plans
-Workspaces
-Help
-Launch Slack
-Launch
-Herbert Sauro
-changeKineticlaw.py  
-19KB Python snippet created on July 1, 2020. This file is private.
-
-ACTIONS
 import tellurium as te
 import roadrunner
+import antimony
 import time
 import copy
 import random
 import numpy as np
 import math
-import scipy
-import pylab
-import seaborn as sns
+#import scipy
+#import pylab
+#import seaborn as sns
 import re
-​
-​
+
 rateLaws = []                                                
 rateLaws.append ("enzyme1*k1*(S28-S9/q0)/(1 + $S$/Ki$)")     
 rateLaws.append ("enzyme2*k2*(S24-S34/q1)/(1 + $S$/Ki$)")    
@@ -91,9 +50,8 @@ rateLaws.append ("enzyme35*k35*(S6-S26/q34)/(1 + $S$/Ki$)")
 rateLaws.append ("enzyme36*k36*(S20-S16/q35)/(1 + $S$/Ki$)")
 rateLaws.append ("enzyme37*k37*(S31-S1/q36)/(1 + $S$/Ki$)") 
 rateLaws.append ("enzyme38*k38*(S21-S19/q37)/(1 + $S$/Ki$)")
-​
+
 modelWithRegulation = """
-​
 species S0, $S1, S4, S6;
 species S7, S8, S14, S15;
 species S19, S20, S24, S26;
@@ -102,7 +60,7 @@ species $S2, S3, $S9, $S11;
 species $S12, $S16, S17, $S21;
 species S22, S23, $S25, S29;
 species $S32, S33, S34;
-​
+
 // Reactions:
 J1: S28 -> $S9;   enzyme1*k1*(S28-S9/q0); 
 J2: S24 -> S34;   enzyme2*k2*(S24-S34/q1);
@@ -142,9 +100,9 @@ J35: S6 -> S26;   enzyme35*k35*(S6-S26/q34);
 J36: S20 -> $S16; enzyme36*k36*(S20-S16/q35);
 J37: S31 -> $S1;  enzyme37*k37*(S31-S1/q36);
 J38: $S21 -> S19; enzyme38*k38*(S21-S19/q37);
-​
+
 factor = 1
-​
+
 enzyme1 = 1;   enzyme2 = 1;  enzyme3 = 1;  enzyme4 = 1;  enzyme5 = 1;  enzyme6 = 1;
 enzyme7 = 1;   enzyme8 = 1;  enzyme9 = 1;  enzyme10 = 1; enzyme11 = 1; enzyme12 = 1;
 enzyme13 = 1;  enzyme14 = 1; enzyme15 = 1; enzyme16 = 1; enzyme17 = 1; enzyme18 = 1;
@@ -152,14 +110,14 @@ enzyme19 = 1;  enzyme20 = 1; enzyme21 = 1; enzyme22 = 1; enzyme23 = 1; enzyme24 
 enzyme25 = 1;  enzyme26 = 1; enzyme27 = 1; enzyme28 = 1; enzyme29 = 1; enzyme30 = 1;
 enzyme31 = 1;  enzyme32 = 1; enzyme33 = 1; enzyme34 = 1; enzyme35 = 1; enzyme36 = 1;
 enzyme37 = 1;  enzyme38 = 1; 
-​
+
 q0 = 1.5;  q1 = 1.5; q2 = 1.5;   q3 = 1.5;  q4 = 1.5;  q5 = 1.5;  q6 = 1.5;  q7 = 1.5;
 q8 = 1.5;  q9 = 1.5; q10 = 1.5;  q11 = 1.5; q12 = 1.5; q13 = 1.5; q14 = 1.5; q15 = 1.5;
 q16 = 1.5; q17 = 1.5; q18 = 1.5; q19 = 1.5; q20 = 1.5; q21 = 1.5; q22 = 1.5; q22 = 1.5;
 q23 = 1.5; q24 = 1.5; q25 = 1.5; q26 = 1.5; q27 = 1.5; q28 = 1.5; q29 = 1.5; q30 = 1.5;
 q31 = 1.5; q32 = 1.5; q33 = 1.5; q34 = 1.5; q35 = 1.5; q36 = 1.5; q37 = 1.5; q38 = 1.5;
 q39 = 4.5
-​
+
 // Species initializations:
 S0 = 0;
 S1 = 0;
@@ -192,10 +150,10 @@ S29 = 4;
 S32 = 1;
 S33 = 3;
 S34 = 5;
-​
+
 // Compartment initializations:
 compartment_ = 1;
-​
+
 // Variable initializations:
 k1 = 7
 k2 = 0.8
@@ -235,13 +193,12 @@ k35 = 0.5
 k36 = 3.5
 k37 = 4.1
 k38 = 5.4
-​
+
 Ki20 = 0.01
 Ki29 = 0.01
 """
-​
+
 modelWithOutRegulation = """
-​
 species S0, $S1, S4, S6;
 species S7, S8, S14, S15;
 species S19, S20, S24, S26;
@@ -250,7 +207,6 @@ species $S2, S3, $S9, $S11;
 species $S12, $S16, S17, $S21;
 species S22, S23, $S25, S29;
 species $S32, S33, S34;
-​
 // Reactions:
 J1: S28 -> $S9;   enzyme1*k1*(S28-S9/q0); 
 J2: S24 -> S34;   enzyme2*k2*(S24-S34/q1);
@@ -290,9 +246,7 @@ J35: S6 -> S26;   enzyme35*k35*(S6-S26/q34);
 J36: S20 -> $S16; enzyme36*k36*(S20-S16/q35);
 J37: S31 -> $S1;  enzyme37*k37*(S31-S1/q36);
 J38: $S21 -> S19; enzyme38*k38*(S21-S19/q37);
-​
 factor = 1
-​
 enzyme1 = 1;   enzyme2 = 1;  enzyme3 = 1;  enzyme4 = 1;  enzyme5 = 1;  enzyme6 = 1;
 enzyme7 = 1;   enzyme8 = 1;  enzyme9 = 1;  enzyme10 = 1; enzyme11 = 1; enzyme12 = 1;
 enzyme13 = 1;  enzyme14 = 1; enzyme15 = 1; enzyme16 = 1; enzyme17 = 1; enzyme18 = 1;
@@ -300,14 +254,12 @@ enzyme19 = 1;  enzyme20 = 1; enzyme21 = 1; enzyme22 = 1; enzyme23 = 1; enzyme24 
 enzyme25 = 1;  enzyme26 = 1; enzyme27 = 1; enzyme28 = 1; enzyme29 = 1; enzyme30 = 1;
 enzyme31 = 1;  enzyme32 = 1; enzyme33 = 1; enzyme34 = 1; enzyme35 = 1; enzyme36 = 1;
 enzyme37 = 1;  enzyme38 = 1; 
-​
 q0 = 1.5;  q1 = 1.5; q2 = 1.5;   q3 = 1.5;  q4 = 1.5;  q5 = 1.5;  q6 = 1.5;  q7 = 1.5;
 q8 = 1.5;  q9 = 1.5; q10 = 1.5;  q11 = 1.5; q12 = 1.5; q13 = 1.5; q14 = 1.5; q15 = 1.5;
 q16 = 1.5; q17 = 1.5; q18 = 1.5; q19 = 1.5; q20 = 1.5; q21 = 1.5; q22 = 1.5; q22 = 1.5;
 q23 = 1.5; q24 = 1.5; q25 = 1.5; q26 = 1.5; q27 = 1.5; q28 = 1.5; q29 = 1.5; q30 = 1.5;
 q31 = 1.5; q32 = 1.5; q33 = 1.5; q34 = 1.5; q35 = 1.5; q36 = 1.5; q37 = 1.5; q38 = 1.5;
 q39 = 4.5
-​
 // Species initializations:
 S0 = 0;
 S1 = 0;
@@ -340,10 +292,8 @@ S29 = 4;
 S32 = 1;
 S33 = 3;
 S34 = 5;
-​
 // Compartment initializations:
 compartment_ = 1;
-​
 // Variable initializations:
 k1 = 7
 k2 = 0.8
@@ -383,15 +333,19 @@ k35 = 0.5
 k36 = 3.5
 k37 = 4.1
 k38 = 5.4
-​
 Ki20 = 0.01
 Ki29 = 0.01
 """
-​
-​
-# Ground truth model
-r = te.loada(modelWithRegulation)
-​
+
+### Ground truth model
+# These three lines replace te.loada()
+check = antimony.loadString(modelWithRegulation)
+if check < 0:
+    print(antimony.getLastError())
+sbml_Reg = antimony.getSBMLString("__main")
+r =  roadrunner.RoadRunner(sbml_Reg)
+
+
 truth_K = [7, 0.8, 0.6, 3, 2.4, 0.4, 0.9, 0.2, 1.1, 1.7,
      7, 4.6, 5.7, 2.7, 7.6, 6.2, 1.7, 0.25, 9.8, 3, 
      5.5, 8.2, 7.8, 3.7, 2.8, 1.8, 6.7, 4.5, 6.5, 9.2,
@@ -402,7 +356,7 @@ truth_S = [0.91564855, 2.09909339, 1.07680066, 2.76795806, 2.05978482,
        1.38501943, 2.07323065, 2.28516598, 0.96431429, 1.11917387,
        1.36461269, 3.32420847, 1.36414672, 2.51924525, 0.80311954,
        2.0440679 , 0.94820142]
-​
+
 truth_J = [ 6.66282856e+00,  3.50581162e-01,  2.56490726e-01,  9.32610851e-03,
         3.32055336e+00,  1.14570471e-01,  7.67271858e-02,  5.69228603e-01,
         3.48804944e-02,  3.43545366e-01, -1.00035830e+00,  9.32610851e-03,
@@ -418,20 +372,21 @@ fitUsingSensitivityMatrix = True
 fitUsingConcentrations = True
 fitUsingFlux_J1 = False
 fitUsingFlux_All = False
-​
+
 r.steadyState()
 truth_CS = r.getScaledConcentrationControlCoefficientMatrix()
-​
-​
-r = te.loada (modelWithOutRegulation)
-​
+
+antimony.loadString(modelWithOutRegulation)
+sbml_noReg = antimony.getSBMLString("__main")
+r =  roadrunner.RoadRunner(sbml_noReg)
+
 parameters = ['k1', 'k2', 'k3', 'k4', 'k5', 'k6', 'k7', 'k8', 'k9', 'k10', 'k11', 'k12', 'k13', 'k14', 'k15', 'k16',
  'k17', 'k18', 'k19', 'k20', 'k21', 'k22', 'k23', 'k24', 'k25', 'k26', 'k27', 'k28', 'k29', 'k30', 'k31', 'k32', 'k33',
  'k34', 'k35', 'k36', 'k37', 'k38']
-​
+
 nReactions = r.getNumReactions()
 reactionIds = r.getReactionIds()
-​
+
 def func (x):
     for index, k in enumerate (parameters):
         r.setValue (k, x[index])
@@ -447,7 +402,7 @@ def func (x):
        diff_S = truth_S - r.getFloatingSpeciesConcentrations()
        diffSqr_S = np.multiply (diff_S, diff_S)
        diffSqr_sum = diffSqr_sum + np.sum (diffSqr_S)
-​
+
 #    if fitUsingFlux_J1:
 #       diff_J = r.J1 - truth_J1
 #       diffSqr_J = diff_J*diff_J
@@ -460,7 +415,7 @@ def func (x):
            diffSqr_sum = diffSqr_sum + diffSqr_J          
        
     return math.sqrt (diffSqr_sum)
-​
+
 def getFitness (rp):
     try:
         diffSqr_sum = 0
@@ -490,13 +445,13 @@ def getFitness (rp):
     except:
         return 10000
     
-​
-​
+
+
 nSpecies = r.getNumFloatingSpecies()
 speciesNames = r.getFloatingSpeciesIds()
-​
+
 currentFitness = 10000
-​
+
 # Mutate a model
 def mutate (rp):
     # Pick a reaction
@@ -531,14 +486,14 @@ def mutate (rp):
     #print (ratelaw)
     rp.setKineticLaw (ri, ratelaw, True)      
     
-​
+
 def byFitness (elem):
     return elem[1]
-​
+
 def copyModel (rx):
-   rx.saveState ('c:\\tmp\\r1.txt')
+   rx.saveState ('c:\\Users\\user\\LogFiles\\parameterAnnealing.txt')
    original = roadrunner.RoadRunner()
-   original.loadState ('c:\\tmp\\r1.txt')
+   original.loadState ('c:\\Users\\user\\LogFiles\\parameterAnnealing.txt')
    return original
         
         
@@ -550,7 +505,7 @@ popSize = 15
 useTemperature = False
 numberOfTrials = 1 
 derivedModels = []
-​
+
 for trials in range (numberOfTrials):
     pop = []
     for i in range (popSize):
@@ -613,7 +568,7 @@ for trials in range (numberOfTrials):
             if Temperature > 0.01:
                Temperature = Temperature*0.95;
         pop = newPop    
-​
+
         regulatedSteps = []
         modelStr = te.sbmlToAntimony (pop[0][0].getCurrentSBML())    
         s1 = modelStr.find('ns:')
@@ -632,5 +587,3 @@ for trials in range (numberOfTrials):
     derivedModels.append (regulatedSteps)
     print ('Time taken = ', time.time() - timeStart)
     print (derivedModels)
-        
-wrap long lines
