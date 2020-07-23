@@ -74,7 +74,7 @@ J9: S15 -> S27;   enzyme9*k9*(S15-S27/q8);
 J10: S34 -> S31;  enzyme10*k10*(S34-S31/q9);
 J11: S27 -> S17;  enzyme11*k11*(S27-S17/q10);
 J12: S33 -> S20;  enzyme12*k12*(S33-S20/q11);
-J13: S26 -> S31;  enzyme13*k13*(S26-S31/q12)/( + S29/0.01);  // Inhibited by S29
+J13: S26 -> S31;  enzyme13*k13*(S26-S31/q12)/(1 + S29/0.01);  // Inhibited by S29
 J14: S26 -> S8;   enzyme14*k14*(S26-S8/q13);
 J15: S19 -> S17;  enzyme15*k15*(S19-S17/q14);
 J16: S34 -> S15;  enzyme16*k16*(S34-S15/q15);
@@ -338,7 +338,6 @@ Ki29 = 0.01
 """
 
 ### Ground truth model
-# These three lines replace te.loada()
 check = antimony.loadString(modelWithRegulation)
 if check < 0:
     print(antimony.getLastError())
@@ -386,35 +385,6 @@ parameters = ['k1', 'k2', 'k3', 'k4', 'k5', 'k6', 'k7', 'k8', 'k9', 'k10', 'k11'
 
 nReactions = r.getNumReactions()
 reactionIds = r.getReactionIds()
-
-def func (x):
-    for index, k in enumerate (parameters):
-        r.setValue (k, x[index])
-    
-    diffSqr_sum = 0
-    r.steadyState()
-    if fitUsingSensitivityMatrix:
-       diff = truth_CS - r.getScaledConcentrationControlCoefficientMatrix()
-       diffSqr = np.multiply (diff, diff)
-       diffSqr_sum = np.sum (diffSqr)
-    
-    if fitUsingConcentrations:
-       diff_S = truth_S - r.getFloatingSpeciesConcentrations()
-       diffSqr_S = np.multiply (diff_S, diff_S)
-       diffSqr_sum = diffSqr_sum + np.sum (diffSqr_S)
-
-#    if fitUsingFlux_J1:
-#       diff_J = r.J1 - truth_J1
-#       diffSqr_J = diff_J*diff_J
-#       diffSqr_sum = diffSqr_sum + diffSqr_J
-       
-    if fitUsingFlux_All:
-       for index, flux in enumerate (reactionIds):
-           diff_J = r.getValue (flux) - truth_J[index]
-           diffSqr_J = diff_J*diff_J
-           diffSqr_sum = diffSqr_sum + diffSqr_J          
-       
-    return math.sqrt (diffSqr_sum)
 
 def getFitness (rp):
     try:
@@ -476,13 +446,35 @@ def mutate (rp):
       
     #print (ri, si, ratelaw)
     p = random.random()
-    if p < 0.5:
-        # Swap in a regulated step
-       ratelaw = ratelaw.replace ('$S$', si)
-       ratelaw = ratelaw.replace ('Ki$', '0.01')        
+    # Swap in a regulated step
+    if ratelaw.find('$S$') != -1: 
+    # Empty rate law
+        if p>0.5:
+            ratelaw = ratelaw.replace ('$S$', si)
+            ratelaw = ratelaw.replace ('Ki$', '0.01')
+        else:  
+            ratelaw = ratelaw.replace ('/(1 + $S$/Ki$)', '')
+    elif ratelaw.find(('S\d\d/\d'),ratelaw) != None:
+    # Populated rate law, double digit reg species
+        pattern = re.search(('S\d\d/\d'),ratelaw)
+        if p>0.5:
+            newLaw = si + '/0'
+            ratelaw = ratelaw.replace(pattern.group(),newLaw)
+        else:
+            ratelaw.replace(pattern.group(), '')
+    elif ratelaw.find(('S\d/\d'),ratelaw) != None:
+    # Populated rate law, single digit reg species
+        pattern = re.search(('S\d/\d'),ratelaw)
+        if p>0.5:
+            newLaw = si + '/0'
+            ratelaw = ratelaw.replace(pattern.group(),newLaw)
+        else:
+            ratelaw.replace(pattern.group(), '')
     else:
-       ratelaw = ratelaw.replace ('/(1 + $S$/Ki$)', '')
-       
+    # Rate law completely absent
+        if p>0.5:
+            newLaw = '/(1 + ' + si +'/0.01)'
+   
     #print (ratelaw)
     rp.setKineticLaw (ri, ratelaw, True)      
     
@@ -500,7 +492,7 @@ def copyModel (rx):
 seed = 12379 #12341
 random.seed (seed)
 np.random.seed (seed)
-nGenerations = 30
+nGenerations = 3
 popSize = 15   
 useTemperature = False
 numberOfTrials = 1 
@@ -522,7 +514,7 @@ for trials in range (numberOfTrials):
     Temperature = 1.0; actualGenerationsRan = nGenerations
     for gen in range (nGenerations):
            
-        pop.sort(key=byFitness)
+        
         fitArray.append (pop[0][1])
         print('Gen: ', gen, ' Fitness = ', pop[0][1])
         if pop[0][1] < 0.0001:
@@ -568,6 +560,8 @@ for trials in range (numberOfTrials):
             if Temperature > 0.01:
                Temperature = Temperature*0.95;
         pop = newPop    
+        
+        pop.sort(key=byFitness)
 
         regulatedSteps = []
         modelStr = te.sbmlToAntimony (pop[0][0].getCurrentSBML())    
